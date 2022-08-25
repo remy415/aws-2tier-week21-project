@@ -1,4 +1,4 @@
-module "vpc" {
+# "vpc" {
   source           = "./vpc"
   vpc_cidr         = "10.0.0.0/16"
   public_sn_count  = 2
@@ -16,7 +16,7 @@ module "vpc" {
 }
 
 
-module "EC2" {
+# "EC2" {
   source              = "./EC2"
   instance_count      = 2
   instance_type       = "t2.micro"
@@ -28,7 +28,7 @@ module "EC2" {
 
 }
 
-module "loadbalancer" {
+# "loadbalancer" {
   source                 = "./loadbalancer"
   public_sg              = module.vpc.public_sg
   public_subnets         = module.vpc.public_subnets
