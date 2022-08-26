@@ -3,13 +3,24 @@ data "aws_ami" "linux" {
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+    values = ["amzn2-ami-kernel-5.10-hvm-2.0.20220426.0-x86_64-*"]
   }
+  
+  resource "aws_instance" "KP21_private" {
+     #2
+    instance_type = var.instance_type #t2.micro
+    ami = data.aws_ami.server_ami.id
+    tags = {
+        Name = "KP21_private"
+    }
+}
 
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
+resource "aws_instance" "KP21_bastion" { #2
+    instance_type = var.instance_type #t2.micro
+    ami = data.aws_ami.server_ami.id
+    tags = {
+        Name = "KP21_bastion"
+    }
 
   owners = ["amazon"]
 }
