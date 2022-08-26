@@ -12,9 +12,9 @@ module "ec2" {
   private_sg     = module.networking.private_sg
   private_subnet = module.networking.private_subnet
   public_subnet  = module.networking.public_subnet
-  elb            = module.loadbalancing.elb
-  alb_tg         = module.loadbalancing.alb_tg
-  key_name       = "project21"
+  elb            = module.load_balancer.elb
+  alb_tg         = module.load_balancer.alb_tg
+  key_name       = "KP_project21"
 }
 
 module "load_balancer" {
@@ -22,5 +22,5 @@ module "load_balancer" {
   public_subnet = module.networking.public_subnet
   vpc_id         = module.networking.vpc_id
   web_sg         = module.networking.web_sg
-  database_asg   = module.compute.database_asg
+  database_asg   = module.ec2.database_asg
 }

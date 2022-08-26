@@ -1,5 +1,6 @@
 #loadbalancer/main.tf
 
+# Create Load balancer
 resource "aws_lb" "KP21_lb" {
   name               = "KP21-loadbalancer"
   internal           = false
@@ -32,3 +33,4 @@ resource "aws_lb_listener" "KP21_lb_listener" {
     target_group_arn = aws_lb_target_group.KP21_tg.arn
   }
 }
+

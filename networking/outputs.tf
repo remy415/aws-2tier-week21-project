@@ -1,5 +1,9 @@
 # networking/outputs.tf 
 
+output "vpc_id" {
+  value = aws_vpc.KP21_vpc.id
+}
+
 output "public_sg" {
   value = aws_security_group.KP21_public_sg.id
 }
@@ -10,10 +14,6 @@ output "private_sg" {
 
 output "web_sg" {
   value = aws_security_group.KP21_web_sg.id
-}
-
-output "vpc_id" {
-  value = aws_vpc.KP21_vpc.id
 }
 
 output "private_subnet" {
