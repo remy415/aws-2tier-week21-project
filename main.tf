@@ -1,42 +1,26 @@
-# "vpc" {
-  source           = "./vpc"
-  vpc_cidr         = "10.0.0.0/16"
-  public_sn_count  = 2
-  private_sn_count = 2
-  max_subnets      = 5
-  public_cidr      = ["10.0.2.0/24", "10.0.4.0/24"]
-  private_cidr     = ["10.0.3.0/24", "10.0.5.0/24"]
-  cidr_blocks      = "0.0.0.0/0"
-  access_ip        = ["0.0.0.0/0"]
-  instance_type    = "t2.micro"
-  public_sg_name   = module.vpc.public_sg.name
-  ami_id           = var.ami_id
-  aws_region       = var.aws_region
-
-
-# "EC2" {
-  source              = "./EC2"
-  instance_count      = 2
-  instance_type       = "t2.micro"
-  public_sg           = module.vpc.public_sg
-  public_subnets      = module.vpc.public_subnets
-  vol_size            = 10
-  lb_target_group_arn = module.loadbalancer.lb_target_group_arn
-  ami_id              = var.ami_id
-
+module "networking" {
+  source        = "./networking"
+  vpc_cidr      = "10.0.0.0/16"
+  access_ip     = var.access_ip
+  public_cidrs  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  private_cidrs = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
 }
 
-# "loadbalancer" {
-  source                 = "./loadbalancer"
-  public_sg              = module.vpc.public_sg
-  public_subnets         = module.vpc.public_subnets
-  tg_port                = 80
-  tg_protocol            = "HTTP"
-  vpc_id                 = module.vpc.vpc_id
-  lb_healthy_threshold   = 2
-  lb_unhealthy_threshold = 2
-  lb_timeout             = 3
-  lb_interval            = 30
-  listener_port          = 80
-  listener_protocol      = "HTTP"
+module "compute" {
+  source         = "./compute"
+  public_sg      = module.networking.public_sg
+  private_sg     = module.networking.private_sg
+  private_subnet = module.networking.private_subnet
+  public_subnet  = module.networking.public_subnet
+  elb            = module.loadbalancing.elb
+  alb_tg         = module.loadbalancing.alb_tg
+  key_name       = "project21"
+}
+
+module "loadbalancing" {
+  source         = "./loadbalancing"
+  public_subnet = module.networking.public_subnet
+  vpc_id         = module.networking.vpc_id
+  web_sg         = module.networking.web_sg
+  database_asg   = module.compute.database_asg
 }
