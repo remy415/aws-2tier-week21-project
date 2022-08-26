@@ -13,8 +13,6 @@
   ami_id           = var.ami_id
   aws_region       = var.aws_region
 
-}
-
 
 # "EC2" {
   source              = "./EC2"

@@ -1,42 +1,35 @@
 data "aws_ami" "server_ami" {
-    most_recent = true
-    owners = ["amazon"]
+  most_recent = true
 
-    filter {
-        name = "name"
-        values = ["amzn2-ami-kernel-5.10-hvm-2.0.20220426.0-x86_64-*"]
-    }
+  owners = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+  }
 }
 
-resource "aws_instance" "KP21_private" {
- 
-    instance_type = var.instance_type 
-    ami = data.aws_ami.server_ami.id
-    tags = {
-        Name = "KP21_private"
-    }
+resource "random_id" "mtc_node_id" {
+  byte_length = 2
+  count       = var.instance_count
 }
 
-resource "aws_instance" "KP21_bastion" { 
-    instance_type = var.instance_type 
-    ami = data.aws_ami.server_ami.id
-    tags = {
-        Name = "KP21_bastion"
-    }
-}
 
-vpc_security_group_ids = [var.public_sg]
-subnet_id = var.public_subnets
+resource "aws_instance" "mtc_node" {
+  count         = var.instance_count
+  instance_type = var.instance_type
+  ami           = data.aws_ami.server_ami.id
 
+  tags = {
+    Name = "mtc_node-${random_id.mtc_node_id[count.index].dec}"
+  }
 
-root_block_device {
-    volume_size = var.vol_size 
-    }
-}
+  # key_name               = ""
+  vpc_security_group_ids = [var.public_sg]
+  subnet_id              = var.public_subnets[count.index]
+  # user_data              = ""
 
-resource "aws_lb_target_group_attachment" "KP21_tga" {
-    count = var.instance_count
-    target_group_arn = var.lb_target_group_arn
-    target_id = aws_instance.KP21_bastion.id
-    port = 8000
+  root_block_device {
+    volume_size = var.vol_size
+  }
 }
