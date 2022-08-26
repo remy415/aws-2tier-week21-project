@@ -9,19 +9,19 @@ data "aws_ami" "server_ami" {
   }
 }
 
-resource "random_id" "mtc_node_id" {
+resource "random_id" "KP21_node_id" {
   byte_length = 2
   count       = var.instance_count
 }
 
 
-resource "aws_instance" "mtc_node" {
+resource "aws_instance" "KP21_node" {
   count         = var.instance_count
   instance_type = var.instance_type
   ami           = data.aws_ami.server_ami.id
 
   tags = {
-    Name = "mtc_node-${random_id.mtc_node_id[count.index].dec}"
+    Name = "KP21_node-${random_id.KP21_node_id[count.index].dec}"
   }
 
   # key_name               = ""
