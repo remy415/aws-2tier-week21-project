@@ -5,6 +5,7 @@ data "aws_ami" "linux" {
     name   = "name"
     values = ["amzn2-ami-kernel-5.10-hvm-2.0.20220426.0-x86_64-*"]
   }
+}
   
   resource "aws_instance" "KP21_private" {
      #2
