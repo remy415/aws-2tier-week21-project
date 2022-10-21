@@ -4,4 +4,4 @@ yum update -y
 yum install -y httpd
 systemctl start httpd
 systemctl enable httpd
-echo "Hello Kinsey from $(hostname -f)" > /var/www/html/index.html
+echo "Hello World from $(hostname -f)" > /var/www/html/index.html
